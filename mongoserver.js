@@ -78,7 +78,15 @@ app.get('/', function (req, res) {
 app.get('/cards', function (req, res) {
         //get the info from the database 
         //and send back a list of the flash cards
-        res.send();
+        const name = req.query.name;
+        flashCardModel.find({name:name},(err,cards) => {
+                if (err){
+                        console.erro(err);
+                        res.send({message: 'There was an error getting the flashcards from the database'})
+                }
+                console.log(cards);
+                res.send(cards)
+        });
 });
 
 
