@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Layout from '../components/navigation';
 
 const baseUrl ='http://localhost:5000?';
 
@@ -13,7 +14,11 @@ class CreateSet extends Component {
 
         submitCards = (event) => {
                 event.preventDefault();
-                this.setState({showCards:true});
+                if(this.state.flashCards === ""){
+                        console.log('No cards to display!');
+                } else {
+                        this.setState({showCards:true});
+                }
         };
 
         saveCards = (event) => {
@@ -51,7 +56,7 @@ class CreateSet extends Component {
         render(){
         
                 return(
-                        <div>
+                        <Layout>
                                 <h1>Create a Flash Card Set</h1>
                                 <form action="submit" onSubmit={this.submitCards}>
                                         Name of Flash Card Set:<br/>
@@ -65,7 +70,7 @@ class CreateSet extends Component {
                                         <button onClick={this.saveCards}>Save</button>
                                 </form>
                                 {this.state.showCards && this.renderFinishedCards()}
-                        </div>        
+                        </Layout>        
                 );
         };
 }

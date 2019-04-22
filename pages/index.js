@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Layout from '../components/navigation';
 
 const url = 'http://localhost:5000'
 class Home extends Component {
@@ -19,7 +20,12 @@ class Home extends Component {
 
         renderListOfFlashCards(){
                 const nameList = this.state.flashCardList.map((item,index) => {
-                       return <li key={index}>{item.name}</li>;
+                        return( <li key={index}>
+                                        <a href={`/practice/${item.name}`}>
+                                                {item.name}
+                                        </a>
+                                </li>
+                        );
                 });
 
                 return(
@@ -32,10 +38,10 @@ class Home extends Component {
         render(){
         
                 return(
-                        <div>
+                        <Layout>
                                 <h1>Flash Card Home Base</h1>
                                 {this.state.render && this.renderListOfFlashCards()}
-                        </div>
+                        </Layout>
                 );
         };
 }

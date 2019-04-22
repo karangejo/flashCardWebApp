@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Layout from '../../components/navigation';
 
 const baseURL = 'http://localhost:5000/cards?name=';
 
@@ -12,6 +13,9 @@ class Practice extends Component {
                 currentStep: 0,
                 playButton: true,
                 playCards: false,
+                wrongAnswer: false,
+                answer: '',
+                finished: false
         }; 
         
         static getInitialProps({query}){
@@ -42,8 +46,10 @@ class Practice extends Component {
                 var targets = [];
 
                 this.state.flashCardList.forEach((item,index) => {
-
+                        prompts[index] = item.prompt;
+                        targets[index] = item.target;
                 })
+
                 this.setState({play:true,playButton:false,prompts:prompts,targets:targets,length:prompts.length});
         };
 
@@ -65,24 +71,62 @@ class Practice extends Component {
                 );
         };
 
+        onSubmit = (event) => {
+                event.preventDefault();
+
+                if(this.state.answer === this.state.targets[this.state.currentStep]){
+                                console.log('Correct!'); 
+                                var step = this.state.currentStep + 1;
+                                console.log('current step is: ',step);
+                                console.log('promts.length is: ', this.state.prompts.length);
+                                this.setState({wrongAnswer: false, currentStep: step});
+                                if(step == this.state.prompts.length){
+                                        console.log('finished');
+                                        this.setState({play: false, finished: true});
+                                }
+                } else {
+                        console.log('Try again!');
+                        this.setState({wrongAnswer: true});
+                }
+
+        };
+
+        tryAgain(){
+                return(
+                        <h4>Wrong answer! Try Again!</h4>
+                );
+        };
+
         renderMemoryGame(){
                 
                 return(
                         <div>
                                 <h5>{this.state.prompts[this.state.currentStep]}</h5>
-                                <input type="text"/>
+                                {this.state.wrongAnswer && this.tryAgain()}
+                                <form onSubmit={this.onSubmit}>
+                                        <input type="text" onChange={event => this.setState({answer: event.target.value})}/>
+                                <button type="submit">Enter</button>
+                                </form>
                         </div>        
                 );         
+        };
+
+        renderFinish(){
+
+                return(
+                        <h4>Finished! Good Work!</h4>      
+                );
         };
 
         render(){
         
                 return(
-                        <div>
+                        <Layout>
                                 <h1>Flash Card Practice</h1>
                                 {this.state.playButton && this.renderListOfFlashCards()}
-                                {/*this.state.play && this.renderMemoryGame()*/}
-                        </div>
+                                {this.state.play && this.renderMemoryGame()}
+                                {this.state.finished && this.renderFinish()}
+                        </Layout>
                 );
         };
 }
